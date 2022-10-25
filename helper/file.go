@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"github.com/PittYao/stream_push_save/internal/consts"
+	"github.com/PittYao/stream_gateway/internal/consts"
 	"os"
 	"path"
 )

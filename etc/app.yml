@@ -2,7 +2,7 @@ server:
   profile: dev
   name: worker
   ip: 127.0.0.1
-  port: 8081
+  port: 8082
 
 log:
   dir: logs
@@ -20,15 +20,12 @@ mysql:
 
 swagger:
 #  http://localhost:8080/doc/index.html
-  title: 视频存储服务文档
-  desc: 合成画面、房间单画面、公区单画面
+  title: 视频存储服务网关文档
+  desc: 网关
   host: ""
   url: /doc
   basePath: /
   schemes:
     - http
 
-ffmpeg:
-  libPath: lib/ffmpeg/ffmpeg.exe
-nginx:
-  libPath: lib/nginx
+

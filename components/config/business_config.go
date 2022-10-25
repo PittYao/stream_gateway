@@ -18,15 +18,5 @@ type Video struct {
 }
 
 func checkConfigAttribute() {
-	if C.Video.Type == "" {
-		panic("配置文件中video.type为空,不能启动服务")
-	}
-
-	if C.Video.SaveDisk == "" {
-		panic("配置文件中video.saveDisk为空,不能启动服务")
-	}
-
-	if C.Video.SaveDir == "" {
-		panic("配置文件中video.saveDir为空,不能启动服务")
-	}
+	//TODO
 }

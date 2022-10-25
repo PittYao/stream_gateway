@@ -1,0 +1,203 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/v1/mix/transform/save/listAll": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "三合一"
+                ],
+                "summary": "查询所有",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/mix/transform/save/rebootAll": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "三合一"
+                ],
+                "summary": "重启所有",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/mix/transform/save/start": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "三合一"
+                ],
+                "summary": "开始",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "startMix3Req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.StartMix3Req"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/mix/transform/save/stop": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "三合一"
+                ],
+                "summary": "停止",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "stopReq",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.StopReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/mix/transform/save/stopAll": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "三合一"
+                ],
+                "summary": "停止所有",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.StartMix3Req": {
+            "type": "object",
+            "required": [
+                "rtspUrlLeft",
+                "rtspUrlMiddle",
+                "rtspUrlRight"
+            ],
+            "properties": {
+                "roomName": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "rtspUrlLeft": {
+                    "type": "string",
+                    "example": "rtsp://admin:cebon61332433@192.168.99.215:554/cam/realmonitor?channel=1\u0026subtype=1"
+                },
+                "rtspUrlMiddle": {
+                    "type": "string",
+                    "example": "rtsp://admin:cebon61332433@192.168.99.215:554/cam/realmonitor?channel=1\u0026subtype=0"
+                },
+                "rtspUrlRight": {
+                    "type": "string",
+                    "example": "rtsp://admin:cebon61332433@192.168.99.215:554/cam/realmonitor?channel=1\u0026subtype=1"
+                },
+                "temperature": {
+                    "type": "string",
+                    "example": ""
+                }
+            }
+        },
+        "dto.StopReq": {
+            "type": "object",
+            "required": [
+                "rtmpUrl",
+                "taskId"
+            ],
+            "properties": {
+                "rtmpUrl": {
+                    "type": "string"
+                },
+                "taskId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "响应码",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "响应数据"
+                },
+                "msg": {
+                    "description": "响应消息",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

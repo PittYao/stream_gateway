@@ -9,9 +9,6 @@ type Config struct {
 	Log          Log     `yaml:"log"`
 	Mysql        Mysql   `yaml:"mysql"`
 	Swagger      Swagger `yaml:"swagger"`
-	Video        Video   `yaml:"video"`
-	Ffmpeg       Ffmpeg  `yaml:"ffmpeg"`
-	Nginx        Nginx   `yaml:"nginx"`
 	ServerInfoId uint    `yaml:"-"`
 }
 
@@ -48,12 +45,4 @@ type Swagger struct {
 	Url      string   `yaml:"url"`
 	BasePath string   `yaml:"basePath"`
 	Schemes  []string `yaml:"schemes"`
-}
-
-type Ffmpeg struct {
-	LibPath string `yaml:"libPath"`
-}
-
-type Nginx struct {
-	LibPath string `yaml:"libPath"`
 }

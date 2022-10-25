@@ -4,9 +4,8 @@ import (
 	"crypto/md5"
 	"errors"
 	"fmt"
-	"github.com/PittYao/stream_push_save/components/config"
-	"github.com/PittYao/stream_push_save/components/log"
-	"github.com/PittYao/stream_push_save/internal/consts"
+	"github.com/PittYao/stream_gateway/components/log"
+	"github.com/PittYao/stream_gateway/internal/consts"
 	"io"
 	"strings"
 )
@@ -77,15 +76,4 @@ func GetIpDirPathFormRtspUrls(split string, rtspUrls ...string) (string, error) 
 		}
 	}
 	return ipDir, nil
-}
-
-// GetSavePath 从rtsp中构建文件夹名称 规则是: 192.168.99.11-192.168.99.12-192.168.99.13
-func GetSavePath(rtspUrls ...string) (string, error) {
-	ipDir, err := GetIpDirPathFormRtspUrls("-", rtspUrls...)
-	if err != nil {
-		log.L.Error("新建文件夹名称失败,根据rtspUrl获取ip异常")
-		return "", err
-	}
-	savePath := config.C.Video.SaveDisk + "\\" + config.C.Video.SaveDir + "\\" + ipDir + "\\" + GetTimeNowStr()
-	return savePath, err
 }

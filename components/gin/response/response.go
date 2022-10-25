@@ -29,9 +29,9 @@ func Err(c *gin.Context, errMsg string) {
 	Respond(c, http.StatusInternalServerError, errMsg, "", nil)
 }
 
-// ErrMsg 返回 HTTP 状态码为 200 的统一失败结构
-func ErrMsg(c *gin.Context, errMsg string, err error) {
-	Respond(c, http.StatusInternalServerError, errMsg, "", err)
+// ErrData 返回 HTTP 状态码为 500 的统一失败结构
+func ErrData(c *gin.Context, errMsg string, data interface{}) {
+	Respond(c, http.StatusInternalServerError, errMsg, data, nil)
 }
 
 // Respond encapsulates c.JSON

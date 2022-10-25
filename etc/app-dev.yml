@@ -1,14 +1,6 @@
 mysql:
-  dsn: root:root@tcp(localhost:3306)/stream_gateway?charset=utf8mb4&parseTime=True&loc=Local
+  dsn: root:root@tcp(localhost:3306)/stream_push_save?charset=utf8mb4&parseTime=True&loc=Local
 
 log:
   format: console
 
-video:
-  type: mix3
-  saveDisk: 'D:'
-  saveDir: videodata
-  saveDay: 90
-  m3u8MaxTime: 4h
-  diskCapacity: 1024
-  deleteDay: 30

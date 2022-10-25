@@ -2,9 +2,9 @@ package helper
 
 import (
 	"fmt"
-	"github.com/PittYao/stream_push_save/components/config"
-	"github.com/PittYao/stream_push_save/components/log"
-	"github.com/PittYao/stream_push_save/internal/consts"
+	"github.com/PittYao/stream_gateway/components/config"
+	"github.com/PittYao/stream_gateway/components/log"
+	"github.com/PittYao/stream_gateway/internal/consts"
 	"github.com/duke-git/lancet/datetime"
 	"strings"
 	"time"
@@ -73,4 +73,10 @@ func GetTempM3u8Url(ip, filePath, m3u8FileName string) string {
 
 	// http://192.168.99.19:8880/videodata/publicSingle/192.168.99.117/2022.04.21-13.08.08/playlist.m3u8
 	return m3u8Url
+}
+
+// RedirectUrlBuilder 重定向url
+func RedirectUrlBuilder(serverHost, port, url string) string {
+	// http://192.168.99.127:8008/record/single/start
+	return fmt.Sprintf("%s%s%s%s", consts.Http, serverHost, port, url)
 }
