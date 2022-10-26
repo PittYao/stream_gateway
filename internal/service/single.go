@@ -9,39 +9,35 @@ import (
 	"github.com/PittYao/stream_gateway/internal/dto"
 	"github.com/PittYao/stream_gateway/internal/httpclient"
 	"github.com/PittYao/stream_gateway/internal/model/ipserver"
-	"github.com/PittYao/stream_gateway/internal/model/roommix3"
+	"github.com/PittYao/stream_gateway/internal/model/roomrecordone"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
 )
 
-// StartMix3 godoc
+// StartSingle godoc
 // @Summary 开始
-// @Tags 三合一
+// @Tags 房间单画面
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response
-// @Param startMix3Req body dto.StartMix3Req true " "
-// @Router /api/v1/mix/transform/save/start [post]
-func StartMix3(c *gin.Context) {
-	var req dto.StartMix3Req
+// @Param req body dto.StartReq true " "
+// @Router /api/v1/single/transform/save/start [post]
+func StartSingle(c *gin.Context) {
+	var req dto.StartReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Err(c, err.Error())
 		return
 	}
 
 	// 查询rtspUrl的ip是否指定执行服务器
-	rtspUrlMiddle := req.RtspUrlMiddle
-	rtspUrlLeft := req.RtspUrlLeft
-	rtspUrlRight := req.RtspUrlRight
-
-	rtspUrls, err := helper.GetIpDirPathFormRtspUrls(",", rtspUrlMiddle, rtspUrlLeft, rtspUrlRight)
+	rtspUrls, err := helper.GetIpDirPathFormRtspUrls(",", req.RtspUrl)
 	if err != nil {
 		log.L.Error(err.Error(), zap.Any("req", req))
 		response.Err(c, err.Error())
 		return
 	}
-	ipServer := ipserver.GetByCameraIpAndVideoType(rtspUrls, consts.Mix3)
+	ipServer := ipserver.GetByCameraIpAndVideoType(rtspUrls, consts.Single)
 	if ipServer == nil {
 		log.L.Info("摄像头没有指定执行服务器ip", zap.Any("req", req))
 		response.Err(c, "摄像头没有指定执行服务器ip")
@@ -49,16 +45,14 @@ func StartMix3(c *gin.Context) {
 	}
 
 	// 查询该rtsp任务是否已经在指定服务器上运行
-	encodeRtspUrlMiddle := helper.EncodeRtspUrl(rtspUrlMiddle)
-	encodeRtspUrlLeft := helper.EncodeRtspUrl(rtspUrlLeft)
-	encodeRtspUrlRight := helper.EncodeRtspUrl(rtspUrlRight)
+	encodeRtspUrl := helper.EncodeRtspUrl(req.RtspUrl)
 
 	serverHost := ipServer.ServerIp
-	mix3s := roommix3.ListByIpAndRtspUrlsAndFfmpegSaveState(serverHost, encodeRtspUrlMiddle, encodeRtspUrlLeft, encodeRtspUrlRight, consts.RunIng)
-	if len(mix3s) != 0 {
+	Singles := roomrecordone.ListByIpAndRtspUrlsAndFfmpegSaveState(serverHost, encodeRtspUrl, consts.RunIng)
+	if len(Singles) != 0 {
 		log.L.Info("该rtsp已经在指定服务器上运行", zap.Any("req", req), zap.String("serverHost", serverHost))
 		startRsp := &dto.StartRsp{
-			TaskId:  mix3s[0].ID,
+			TaskId:  Singles[0].ID,
 			RtmpUrl: "",
 		}
 		response.OKMsg(c, fmt.Sprintf("该rtsp已经在指定服务器:%s上运行", serverHost), startRsp)
@@ -66,19 +60,19 @@ func StartMix3(c *gin.Context) {
 	}
 
 	// 转发请求
-	redirectUrl := helper.RedirectUrlBuilder(serverHost, consts.Mix3Port, fmt.Sprintf("/%s%s", consts.Mix3, consts.Start))
+	redirectUrl := helper.RedirectUrlBuilder(serverHost, consts.SinglePort, fmt.Sprintf("/%s%s", consts.Single, consts.Start))
 	c.Redirect(http.StatusPermanentRedirect, redirectUrl)
 }
 
-// StopMix3 godoc
+// StopSingle godoc
 // @Summary 停止
-// @Tags 三合一
+// @Tags 房间单画面
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response
 // @Param stopReq body dto.StopReq true " "
-// @Router /api/v1/mix/transform/save/stop [post]
-func StopMix3(c *gin.Context) {
+// @Router /api/v1/single/transform/save/stop [post]
+func StopSingle(c *gin.Context) {
 	var stopReq dto.StopReq
 	if err := c.ShouldBindJSON(&stopReq); err != nil {
 		response.Err(c, err.Error())
@@ -86,38 +80,38 @@ func StopMix3(c *gin.Context) {
 	}
 
 	// 查询该任务在哪个服务器执行
-	mix3, err := roommix3.GetById(stopReq.TaskId)
+	one, err := roomrecordone.GetById(stopReq.TaskId)
 	if err != nil {
 		response.Err(c, err.Error())
 		return
 	}
 
 	// 重定向到指定服务器
-	serverHost := mix3.Ip
-	redirectUrl := helper.RedirectUrlBuilder(serverHost, consts.Mix3Port, fmt.Sprintf("/%s%s", consts.Mix3, consts.Stop))
+	serverHost := one.Ip
+	redirectUrl := helper.RedirectUrlBuilder(serverHost, consts.SinglePort, fmt.Sprintf("/%s%s", consts.Single, consts.Stop))
 	c.Redirect(http.StatusPermanentRedirect, redirectUrl)
 }
 
-// StopAllMix3 godoc
+// StopAllSingle godoc
 // @Summary 停止所有
-// @Tags 三合一
+// @Tags 房间单画面
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response
-// @Router /api/v1/mix/transform/save/stopAll [post]
-func StopAllMix3(c *gin.Context) {
-	mix3IpServers := ipserver.ListByVideoType(consts.Mix3)
+// @Router /api/v1/single/transform/save/stopAll [post]
+func StopAllSingle(c *gin.Context) {
+	singleIpServers := ipserver.ListByVideoType(consts.Single)
 
-	if len(mix3IpServers) == 0 {
-		response.Err(c, "没有配置三合一画面服务器ip")
+	if len(singleIpServers) == 0 {
+		response.Err(c, "没有配置房间画面服务器ip")
 		return
 	}
 
 	var stops []*dto.StopAllResp
 
-	for _, server := range mix3IpServers {
+	for _, server := range singleIpServers {
 		// 重定向
-		stopAllUrl := helper.RedirectUrlBuilder(server.ServerIp, consts.Mix3Port, fmt.Sprintf("/%s%s", consts.Mix3, consts.StopAll))
+		stopAllUrl := helper.RedirectUrlBuilder(server.ServerIp, consts.SinglePort, fmt.Sprintf("/%s%s", consts.Single, consts.StopAll))
 		err := httpclient.StopHttpClient(stopAllUrl)
 
 		stop := &dto.StopAllResp{
@@ -131,31 +125,31 @@ func StopAllMix3(c *gin.Context) {
 		stops = append(stops, stop)
 	}
 
-	response.OKMsg(c, "关闭三合一画面任务成功", stops)
+	response.OKMsg(c, "关闭房间画面任务成功", stops)
 }
 
-// RebootAllMix3 godoc
+// RebootAllSingle godoc
 // @Summary 重启所有
-// @Tags 三合一
+// @Tags 房间单画面
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response
-// @Router /api/v1/mix/transform/save/reboot [post]
-func RebootAllMix3(c *gin.Context) {
-	// 查询所有的三合一画面服务
-	mix3IpServers := ipserver.ListByVideoType(consts.Mix3)
+// @Router /api/v1/single/transform/save/reboot [post]
+func RebootAllSingle(c *gin.Context) {
+	// 查询所有的房间画面服务
+	singleIpServers := ipserver.ListByVideoType(consts.Single)
 
-	if len(mix3IpServers) == 0 {
-		response.Err(c, "DB没有配置三合一画面服务器ip")
+	if len(singleIpServers) == 0 {
+		response.Err(c, "DB没有配置房间画面服务器ip")
 		return
 	}
 
 	var lists []*dto.ClientResponse
 
-	for _, server := range mix3IpServers {
+	for _, server := range singleIpServers {
 		// 转发请求
 		serverHost := server.ServerIp
-		rebootUrl := helper.RedirectUrlBuilder(serverHost, consts.Mix3Port, fmt.Sprintf("/%s%s", consts.Mix3, consts.RebootAll))
+		rebootUrl := helper.RedirectUrlBuilder(serverHost, consts.SinglePort, fmt.Sprintf("/%s%s", consts.Single, consts.RebootAll))
 		err, resp := httpclient.RebootHttpClient(rebootUrl)
 
 		list := &dto.ClientResponse{
@@ -167,31 +161,30 @@ func RebootAllMix3(c *gin.Context) {
 		lists = append(lists, list)
 	}
 
-	response.OKMsg(c, "重启所有三合一画面任务成功,各个服务器中异常的任务id如下", lists)
+	response.OKMsg(c, "重启所有房间画面任务成功,各个服务器中异常的任务id如下", lists)
 }
 
-// ListAllMix3 godoc
+// ListAllSingle godoc
 // @Summary 查询所有
-// @Tags 三合一
+// @Tags 房间单画面
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response
-// @Router /api/v1/mix/transform/save/list [post]
-func ListAllMix3(c *gin.Context) {
-	// 查询所有的3合一画面服务
-	mix3IpServers := ipserver.ListByVideoType(consts.Mix3)
+// @Router /api/v1/single/transform/save/list [post]
+func ListAllSingle(c *gin.Context) {
+	SingleIpServers := ipserver.ListByVideoType(consts.Single)
 
-	if len(mix3IpServers) == 0 {
-		response.Err(c, "DB没有配置3合一画面服务器ip")
+	if len(SingleIpServers) == 0 {
+		response.Err(c, "DB没有配置房间画面服务器ip")
 		return
 	}
 
 	var lists []*dto.ClientResponse
 
-	for _, server := range mix3IpServers {
+	for _, server := range SingleIpServers {
 		// 转发请求
 		serverHost := server.ServerIp
-		listUrl := helper.RedirectUrlBuilder(serverHost, consts.Mix3Port, fmt.Sprintf("/%s%s", consts.Mix3, consts.GetAll))
+		listUrl := helper.RedirectUrlBuilder(serverHost, consts.SinglePort, fmt.Sprintf("/%s%s", consts.Single, consts.GetAll))
 		err, resp := httpclient.ListStreamHttpClient(listUrl)
 		if err != nil {
 			log.L.Sugar().Errorf("查询服务器:%s,异常", serverHost)
@@ -206,5 +199,5 @@ func ListAllMix3(c *gin.Context) {
 		lists = append(lists, list)
 	}
 
-	response.OKMsg(c, "查询所有3合一画面任务成功,各个服务器中异常的任务id如下", lists)
+	response.OKMsg(c, "查询所有房间画面任务成功,各个服务器中异常的任务id如下", lists)
 }

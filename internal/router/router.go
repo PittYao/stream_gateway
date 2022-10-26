@@ -18,8 +18,26 @@ func Routes(app *gin.Engine) {
 				mix3Group.POST("/start", service.StartMix3)
 				mix3Group.POST("/stop", service.StopMix3)
 				mix3Group.POST("/stopAll", service.StopAllMix3)
-				mix3Group.POST("/rebootAll", service.RebootAllMix3)
-				mix3Group.POST("/listAll", service.ListAllMix3)
+				mix3Group.POST("/list", service.ListAllMix3)
+				mix3Group.POST("/reboot", service.RebootAllMix3)
+			}
+
+			singleGroup := v1.Group("/single/transform/save")
+			{
+				singleGroup.POST("/start", service.StartSingle)
+				singleGroup.POST("/stop", service.StopSingle)
+				singleGroup.POST("/stopAll", service.StopAllSingle)
+				singleGroup.POST("/list", service.ListAllSingle)
+				singleGroup.POST("/reboot", service.RebootAllSingle)
+			}
+
+			publicSingleGroup := v1.Group("/other/transform/save")
+			{
+				publicSingleGroup.POST("/start", service.StartPublic)
+				publicSingleGroup.POST("/stop", service.StopPublic)
+				publicSingleGroup.POST("/stopAll", service.StopAllPublic)
+				publicSingleGroup.POST("/list", service.ListAllPublic)
+				publicSingleGroup.POST("/reboot", service.RebootAllPublic)
 			}
 		}
 
