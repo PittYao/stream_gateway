@@ -99,34 +99,3 @@ func RebootHttpClient(url string) (error, response.Response) {
 
 	return err, response
 }
-
-func CopyM3u8HttpClient(url string, id uint) (err error, response response.Response) {
-
-	err = gout.
-		// POST请求
-		POST(url).
-		// 打开debug模式
-		Debug(true).
-		SetJSON(gout.H{
-			"id": id,
-		}).
-		// BindJSON解析返回的body内容
-		// 同类函数有BindBody, BindYAML, BindXML
-		BindJSON(&response).
-		// 结束函数
-		Do()
-
-	// 判断错误
-	if err != nil {
-		log.L.Error("请求临时m3u8文件异常", zap.String("url", url), zap.Error(err))
-		return
-	}
-
-	if response.Code != 200 {
-		log.L.Error("请求临时m3u8文件异常", zap.String("url", url), zap.Any("response", response))
-		err = errors.New(response.Msg)
-		return
-	}
-
-	return
-}
