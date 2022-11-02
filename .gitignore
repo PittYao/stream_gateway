@@ -1,1 +1,4 @@
 /logs/*
+/stream_gateway.exe
+/restart_service.log
+/startup.bat

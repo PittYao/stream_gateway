@@ -1,6 +1,6 @@
 server:
   profile: dev
-  name: worker
+  name: gateway
   ip: 127.0.0.1
   port: 8082
 
