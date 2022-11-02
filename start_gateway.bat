@@ -1,2 +1,2 @@
 cd /d D:\self_project\go\src\github.com\PittYao\stream_gateway
-start daemon.bat single
+start daemon.bat
