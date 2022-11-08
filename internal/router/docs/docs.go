@@ -16,6 +16,138 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/mix/transform/save/41/list": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "四合一"
+                ],
+                "summary": "查询所有",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/mix/transform/save/41/reboot": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "四合一"
+                ],
+                "summary": "重启所有",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/mix/transform/save/41/start": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "四合一"
+                ],
+                "summary": "开始",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.StartMix4Req"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/mix/transform/save/41/stop": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "四合一"
+                ],
+                "summary": "停止",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "stopReq",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.StopReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/mix/transform/save/41/stopAll": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "四合一"
+                ],
+                "summary": "停止所有",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/mix/transform/save/list": {
             "post": {
                 "consumes": [
@@ -437,6 +569,41 @@ const docTemplate = `{
                 "rtspUrlRight": {
                     "type": "string",
                     "example": "rtsp://admin:cebon61332433@192.168.99.215:554/cam/realmonitor?channel=1\u0026subtype=1"
+                },
+                "temperature": {
+                    "type": "string",
+                    "example": ""
+                }
+            }
+        },
+        "dto.StartMix4Req": {
+            "type": "object",
+            "required": [
+                "rtspUrlMiddle",
+                "rtspUrlSmallOne",
+                "rtspUrlSmallThree",
+                "rtspUrlSmallTwo"
+            ],
+            "properties": {
+                "roomName": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "rtspUrlMiddle": {
+                    "type": "string",
+                    "example": "rtsp://admin:CEBON123@192.168.99.115"
+                },
+                "rtspUrlSmallOne": {
+                    "type": "string",
+                    "example": "rtsp://admin:cebon61332433@192.168.99.112"
+                },
+                "rtspUrlSmallThree": {
+                    "type": "string",
+                    "example": "rtsp://admin:cebon61332433@192.168.99.215"
+                },
+                "rtspUrlSmallTwo": {
+                    "type": "string",
+                    "example": "rtsp://admin:cebon61332433@192.168.99.215"
                 },
                 "temperature": {
                     "type": "string",

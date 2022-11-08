@@ -21,6 +21,14 @@ func Routes(app *gin.Engine) {
 				mix3Group.POST("/list", service.ListAllMix3)
 				mix3Group.POST("/reboot", service.RebootAllMix3)
 			}
+			mix4Group := v1.Group("/mix/transform/save/41")
+			{
+				mix4Group.POST("/start", service.StartMix4)
+				mix4Group.POST("/stop", service.StopMix4)
+				mix4Group.POST("/stopAll", service.StopAllMix4)
+				mix4Group.POST("/list", service.ListAllMix4)
+				mix4Group.POST("/reboot", service.RebootAllMix4)
+			}
 
 			singleGroup := v1.Group("/single/transform/save")
 			{

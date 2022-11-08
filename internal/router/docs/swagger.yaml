@@ -21,6 +21,32 @@ definitions:
     - rtspUrlMiddle
     - rtspUrlRight
     type: object
+  dto.StartMix4Req:
+    properties:
+      roomName:
+        example: "1"
+        type: string
+      rtspUrlMiddle:
+        example: rtsp://admin:CEBON123@192.168.99.115
+        type: string
+      rtspUrlSmallOne:
+        example: rtsp://admin:cebon61332433@192.168.99.112
+        type: string
+      rtspUrlSmallThree:
+        example: rtsp://admin:cebon61332433@192.168.99.215
+        type: string
+      rtspUrlSmallTwo:
+        example: rtsp://admin:cebon61332433@192.168.99.215
+        type: string
+      temperature:
+        example: ""
+        type: string
+    required:
+    - rtspUrlMiddle
+    - rtspUrlSmallOne
+    - rtspUrlSmallThree
+    - rtspUrlSmallTwo
+    type: object
   dto.StartReq:
     properties:
       rtspUrl:
@@ -53,6 +79,90 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/mix/transform/save/41/list:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 查询所有
+      tags:
+      - 四合一
+  /api/v1/mix/transform/save/41/reboot:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 重启所有
+      tags:
+      - 四合一
+  /api/v1/mix/transform/save/41/start:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ' '
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.StartMix4Req'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 开始
+      tags:
+      - 四合一
+  /api/v1/mix/transform/save/41/stop:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ' '
+        in: body
+        name: stopReq
+        required: true
+        schema:
+          $ref: '#/definitions/dto.StopReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 停止
+      tags:
+      - 四合一
+  /api/v1/mix/transform/save/41/stopAll:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 停止所有
+      tags:
+      - 四合一
   /api/v1/mix/transform/save/list:
     post:
       consumes:
