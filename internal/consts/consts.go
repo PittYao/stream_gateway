@@ -44,16 +44,13 @@ const (
 )
 
 const (
-	RunIngError                  int = -1 // 运行异常
-	RunNetworkError              int = -2 // 网络运行异常
-	RebootIngNetworkError        int = -3 // 开机运行进行中的任务时发现网络不通
-	RunIng                       int = 1  // 正在运行
-	CloseSuccess                 int = 2  // 关闭成功
-	ReBoot                       int = 3  // 定时重启
-	RebootNetworkError           int = 4  // 网络运行异常已重启
-	RebootNetworkErrorButRunning int = 5  // 网络运行异常重启时发现已有任务在运行中
-	Boot                         int = 6  // 开机重启
-	BootClose                    int = 7  // 开机关闭,已有相同任务重启
+	RunIngError          int = -1 // 运行异常
+	RebootError          int = -2 // 重启任务失败
+	RunIng               int = 1  // 正在运行
+	CloseSuccess         int = 2  // 关闭成功
+	RebootTaskButRunning int = 3  // 重启任务时发现已有任务在运行中
+	BootClose            int = 4  // 开机关闭,已有相同任务重启
+	RebootSuccess        int = 5  // 重启成功
 )
 
 const (
