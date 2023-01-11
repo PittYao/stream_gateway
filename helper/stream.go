@@ -42,6 +42,10 @@ func GetRtmpUrl(rtspUrl string) string {
 	rtmpUrl := "rtmp://" + config.C.Server.Ip + ":1935/live/" + Md5ByString(rtspUrl)
 	return rtmpUrl
 }
+func GetRtmpUrlByIp(ip, rtspUrl string) string {
+	rtmpUrl := "rtmp://" + ip + ":1935/live/" + Md5ByString(rtspUrl)
+	return rtmpUrl
+}
 
 // GetM3u8Url 获取m3u8网络地址
 func GetM3u8Url(ip, filePath string) string {

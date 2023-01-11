@@ -57,9 +57,10 @@ func StartMix3(c *gin.Context) {
 	mix3s := roommix3.ListByIpAndRtspUrlsAndFfmpegSaveState(serverHost, encodeRtspUrlMiddle, encodeRtspUrlLeft, encodeRtspUrlRight, consts.RunIng)
 	if len(mix3s) != 0 {
 		log.L.Info("该rtsp已经在指定服务器上运行", zap.Any("req", req), zap.String("serverHost", serverHost))
+		mix3 := mix3s[0]
 		startRsp := &dto.StartRsp{
-			TaskId:  mix3s[0].ID,
-			RtmpUrl: "",
+			TaskId:  mix3.ID,
+			RtmpUrl: helper.GetRtmpUrlByIp(mix3.Ip, mix3.RtspUrlMiddle),
 		}
 		response.OKMsg(c, fmt.Sprintf("该rtsp已经在指定服务器:%s上运行", serverHost), startRsp)
 		return
@@ -67,6 +68,7 @@ func StartMix3(c *gin.Context) {
 
 	// 转发请求
 	redirectUrl := helper.RedirectUrlBuilder(serverHost, consts.Mix3Port, fmt.Sprintf("/%s%s", consts.Mix3, consts.Start))
+	log.L.Sugar().Infof("redirectUrl:%s", redirectUrl)
 	c.Redirect(http.StatusPermanentRedirect, redirectUrl)
 }
 

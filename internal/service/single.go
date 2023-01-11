@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/PittYao/stream_gateway/components/config"
 	"github.com/PittYao/stream_gateway/components/gin/response"
 	"github.com/PittYao/stream_gateway/components/log"
 	"github.com/PittYao/stream_gateway/helper"
@@ -10,9 +11,11 @@ import (
 	"github.com/PittYao/stream_gateway/internal/httpclient"
 	"github.com/PittYao/stream_gateway/internal/model/ipserver"
 	"github.com/PittYao/stream_gateway/internal/model/roomrecordone"
+	"github.com/duke-git/lancet/random"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
+	"strings"
 )
 
 // StartSingle godoc
@@ -30,17 +33,26 @@ func StartSingle(c *gin.Context) {
 		return
 	}
 
-	// 查询rtspUrl的ip是否指定执行服务器
-	rtspUrls, err := helper.GetIpDirPathFormRtspUrls(",", req.RtspUrl)
+	// 从rtspUrl中获取ip
+	cameraIp, err := helper.GetIpDirPathFormRtspUrls(",", req.RtspUrl)
 	if err != nil {
 		log.L.Error(err.Error(), zap.Any("req", req))
 		response.Err(c, err.Error())
 		return
 	}
-	ipServer := ipserver.GetByCameraIpAndVideoType(rtspUrls, consts.Single)
+	// 查询rtspUrl的ip是否指定执行服务器
+	ipServer := ipserver.GetByCameraIpAndVideoType(cameraIp, consts.Single)
 	if ipServer == nil {
 		log.L.Info("摄像头没有指定执行服务器ip", zap.Any("req", req))
 		response.Err(c, "摄像头没有指定执行服务器ip")
+		return
+	}
+	if ipServer.DontSave {
+		startRsp := &dto.StartRsp{
+			TaskId:  uint(random.RandInt(1, 20000)),
+			RtmpUrl: helper.GetRtmpUrlByIp(config.C.Server.Ip, req.RtspUrl),
+		}
+		response.OKMsg(c, fmt.Sprintf("该地址配置不存储,返回随机值"), startRsp)
 		return
 	}
 
@@ -48,12 +60,13 @@ func StartSingle(c *gin.Context) {
 	encodeRtspUrl := helper.EncodeRtspUrl(req.RtspUrl)
 
 	serverHost := ipServer.ServerIp
-	Singles := roomrecordone.ListByIpAndRtspUrlsAndFfmpegSaveState(serverHost, encodeRtspUrl, consts.RunIng)
-	if len(Singles) != 0 {
+	singles := roomrecordone.ListByIpAndRtspUrlsAndFfmpegSaveState(serverHost, encodeRtspUrl, consts.RunIng)
+	if len(singles) != 0 {
 		log.L.Info("该rtsp已经在指定服务器上运行", zap.Any("req", req), zap.String("serverHost", serverHost))
+		one := singles[0]
 		startRsp := &dto.StartRsp{
-			TaskId:  Singles[0].ID,
-			RtmpUrl: "",
+			TaskId:  one.ID,
+			RtmpUrl: helper.GetRtmpUrlByIp(one.Ip, one.RtspUrl),
 		}
 		response.OKMsg(c, fmt.Sprintf("该rtsp已经在指定服务器:%s上运行", serverHost), startRsp)
 		return
@@ -76,6 +89,11 @@ func StopSingle(c *gin.Context) {
 	var stopReq dto.StopReq
 	if err := c.ShouldBindJSON(&stopReq); err != nil {
 		response.Err(c, err.Error())
+		return
+	}
+
+	if strings.Contains(stopReq.RtmpUrl, config.C.Server.Ip) {
+		response.OKMsg(c, "该地址配置为不存储", nil)
 		return
 	}
 

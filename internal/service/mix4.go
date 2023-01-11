@@ -59,9 +59,10 @@ func StartMix4(c *gin.Context) {
 	mix4s := roommix4.ListByIpAndRtspUrlsAndFfmpegSaveState(serverHost, encodeRtspUrlMiddle, encodeRtspUrlSmallOne, encodeRtspUrlSmallTwo, encodeRtspUrlSmallThree, consts.RunIng)
 	if len(mix4s) != 0 {
 		log.L.Info("该rtsp已经在指定服务器上运行", zap.Any("req", req), zap.String("serverHost", serverHost))
+		mix4 := mix4s[0]
 		startRsp := &dto.StartRsp{
-			TaskId:  mix4s[0].ID,
-			RtmpUrl: "",
+			TaskId:  mix4.ID,
+			RtmpUrl: helper.GetRtmpUrlByIp(mix4.Ip, mix4.RtspUrlMiddle),
 		}
 		response.OKMsg(c, fmt.Sprintf("该rtsp已经在指定服务器:%s上运行", serverHost), startRsp)
 		return

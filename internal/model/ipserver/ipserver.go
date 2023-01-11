@@ -15,6 +15,7 @@ type IpServer struct {
 	VideoType     string
 	PingTime      time.Time
 	NetworkInfo   string
+	DontSave      bool // 不存储
 }
 
 func GetByCameraIpAndVideoType(cameraIp, videoType string) (ipServer *IpServer) {

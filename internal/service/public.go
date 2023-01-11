@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/PittYao/stream_gateway/components/config"
 	"github.com/PittYao/stream_gateway/components/gin/response"
 	"github.com/PittYao/stream_gateway/components/log"
 	"github.com/PittYao/stream_gateway/helper"
@@ -10,9 +11,11 @@ import (
 	"github.com/PittYao/stream_gateway/internal/httpclient"
 	"github.com/PittYao/stream_gateway/internal/model/ipserver"
 	"github.com/PittYao/stream_gateway/internal/model/publicrecordone"
+	"github.com/duke-git/lancet/random"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
+	"strings"
 )
 
 // StartPublic godoc
@@ -43,6 +46,14 @@ func StartPublic(c *gin.Context) {
 		response.Err(c, "摄像头没有指定执行服务器ip")
 		return
 	}
+	if ipServer.DontSave {
+		startRsp := &dto.StartRsp{
+			TaskId:  uint(random.RandInt(1, 20000)),
+			RtmpUrl: helper.GetRtmpUrlByIp(config.C.Server.Ip, req.RtspUrl),
+		}
+		response.OKMsg(c, fmt.Sprintf("该地址配置不存储,返回随机值"), startRsp)
+		return
+	}
 
 	// 查询该rtsp任务是否已经在指定服务器上运行
 	encodeRtspUrl := helper.EncodeRtspUrl(req.RtspUrl)
@@ -51,9 +62,10 @@ func StartPublic(c *gin.Context) {
 	publics := publicrecordone.ListByIpAndRtspUrlsAndFfmpegSaveState(serverHost, encodeRtspUrl, consts.RunIng)
 	if len(publics) != 0 {
 		log.L.Info("该rtsp已经在指定服务器上运行", zap.Any("req", req), zap.String("serverHost", serverHost))
+		one := publics[0]
 		startRsp := &dto.StartRsp{
-			TaskId:  publics[0].ID,
-			RtmpUrl: "",
+			TaskId:  one.ID,
+			RtmpUrl: helper.GetRtmpUrlByIp(one.Ip, one.RtspUrl),
 		}
 		response.OKMsg(c, fmt.Sprintf("该rtsp已经在指定服务器:%s上运行", serverHost), startRsp)
 		return
@@ -76,6 +88,11 @@ func StopPublic(c *gin.Context) {
 	var stopReq dto.StopReq
 	if err := c.ShouldBindJSON(&stopReq); err != nil {
 		response.Err(c, err.Error())
+		return
+	}
+
+	if strings.Contains(stopReq.RtmpUrl, config.C.Server.Ip) {
+		response.OKMsg(c, "该地址配置为不存储", nil)
 		return
 	}
 
