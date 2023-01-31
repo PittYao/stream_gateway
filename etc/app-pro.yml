@@ -1,3 +1,6 @@
+server:
+  mode: release
+
 mysql:
   dsn: root:root@tcp(localhost:3306)/stream_push_save?charset=utf8mb4&parseTime=True&loc=Local
 
