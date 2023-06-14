@@ -57,3 +57,7 @@ type ClientResponse struct {
 	ServerIp string      `json:"serverIp"`
 	Data     interface{} `json:"data"`
 }
+
+type UpgradeReq struct {
+	FileUrl string `json:"fileUrl"` // 升级文件下载地址
+}

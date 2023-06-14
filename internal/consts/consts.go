@@ -41,6 +41,7 @@ const (
 	StopAll   = "/stopAll"
 	RebootAll = "/rebootAll"
 	GetAll    = "/getAll"
+	Upgrade   = "/upgrade"
 )
 
 const (

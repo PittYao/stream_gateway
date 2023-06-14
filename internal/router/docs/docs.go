@@ -543,6 +543,39 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/upgrade": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "更新程序"
+                ],
+                "summary": "更新程序",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpgradeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -635,6 +668,15 @@ const docTemplate = `{
                 },
                 "taskId": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.UpgradeReq": {
+            "type": "object",
+            "properties": {
+                "fileUrl": {
+                    "description": "升级文件下载地址",
+                    "type": "string"
                 }
             }
         },

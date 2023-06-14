@@ -65,6 +65,12 @@ definitions:
     - rtmpUrl
     - taskId
     type: object
+  dto.UpgradeReq:
+    properties:
+      fileUrl:
+        description: 升级文件下载地址
+        type: string
+    type: object
   response.Response:
     properties:
       code:
@@ -415,4 +421,25 @@ paths:
       summary: 停止所有
       tags:
       - 房间单画面
+  /api/v1/upgrade:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ' '
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpgradeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 更新程序
+      tags:
+      - 更新程序
 swagger: "2.0"

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/PittYao/stream_gateway/components/gin/response"
 	"github.com/PittYao/stream_gateway/components/log"
+	"github.com/PittYao/stream_gateway/internal/dto"
 	"github.com/guonaihong/gout"
 	"go.uber.org/zap"
 )
@@ -98,4 +99,25 @@ func RebootHttpClient(url string) (error, response.Response) {
 	}
 
 	return err, response
+}
+
+func UpgradeHttpClient(url string, dto dto.UpgradeReq) error {
+	response := response.Response{}
+	err := gout.
+		// POST请求
+		POST(url).
+		// 打开debug模式
+		Debug(true).
+		// SetJSON设置http body为json
+		// 同类函数有SetBody, SetYAML, SetXML, SetForm, SetWWWForm
+		SetJSON(gout.H{
+			"fileUrl": dto.FileUrl,
+		}).
+		// BindJSON解析返回的body内容
+		// 同类函数有BindBody, BindYAML, BindXML
+		BindJSON(&response).
+		// 结束函数
+		Do()
+
+	return err
 }

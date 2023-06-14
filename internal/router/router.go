@@ -29,7 +29,6 @@ func Routes(app *gin.Engine) {
 				mix4Group.POST("/list", service.ListAllMix4)
 				mix4Group.POST("/reboot", service.RebootAllMix4)
 			}
-
 			singleGroup := v1.Group("/single/transform/save")
 			{
 				singleGroup.POST("/start", service.StartSingle)
@@ -38,7 +37,6 @@ func Routes(app *gin.Engine) {
 				singleGroup.POST("/list", service.ListAllSingle)
 				singleGroup.POST("/reboot", service.RebootAllSingle)
 			}
-
 			publicSingleGroup := v1.Group("/other/transform/save")
 			{
 				publicSingleGroup.POST("/start", service.StartPublic)
@@ -47,6 +45,8 @@ func Routes(app *gin.Engine) {
 				publicSingleGroup.POST("/list", service.ListAllPublic)
 				publicSingleGroup.POST("/reboot", service.RebootAllPublic)
 			}
+
+			v1.POST("/upgrade", service.Upgrade)
 		}
 
 	}
