@@ -35,12 +35,7 @@ func StartMix3(c *gin.Context) {
 	rtspUrlLeft := req.RtspUrlLeft
 	rtspUrlRight := req.RtspUrlRight
 
-	rtspUrls, err := helper.GetIpDirPathFormRtspUrls(",", rtspUrlMiddle, rtspUrlLeft, rtspUrlRight)
-	if err != nil {
-		log.L.Error(err.Error(), zap.Any("req", req))
-		response.Err(c, err.Error())
-		return
-	}
+	rtspUrls := rtspUrlMiddle + "," + rtspUrlLeft + "," + rtspUrlRight
 	ipServer := ipserver.GetByCameraIpAndVideoType(rtspUrls, consts.Mix3)
 	if ipServer == nil {
 		log.L.Info("摄像头没有指定执行服务器ip", zap.Any("req", req))
